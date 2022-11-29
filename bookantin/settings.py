@@ -51,9 +51,11 @@ INSTALLED_APPS = [
 
     # Modules
     'rest_framework',
+    'rest_framework.authtoken',
     'corsheaders',
 
     # Apps
+    'bookantinauth',
 ]
 
 MIDDLEWARE = [
@@ -165,3 +167,10 @@ STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 # Allow all origins for CORS.
 CORS_ALLOW_ALL_ORIGINS = True
+
+# Use custom token authentication
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'bookantinauth.auth.BooKantinAPITokenAuthentication',
+    ],
+}

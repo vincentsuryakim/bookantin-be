@@ -14,11 +14,21 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.contrib.auth.models import Group
+from django.urls import path, include
 
 from .views import HealthCheckAPI
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/health', HealthCheckAPI.as_view()),
+    path('api/', include('bookantinauth.urls')),
 ]
+
+try:
+    from rest_framework.authtoken.models import TokenProxy as DRFToken
+except ImportError:
+    from rest_framework.authtoken.models import Token as DRFToken
+
+admin.site.unregister(DRFToken)
+admin.site.unregister(Group)
