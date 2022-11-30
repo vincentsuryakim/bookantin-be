@@ -6,6 +6,15 @@ import binascii
 
 # Create your models here.
 
+class Seller(models.Model):
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, blank=True, related_name="seller")
+    description = models.TextField(default="", null=True, blank=True)
+    verified = models.BooleanField(default=False)
+
+class UserExtension(models.Model):
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="user_extension")
+    type = models.CharField(max_length=10, choices=(('SELLER', 'SELLER'), ('CUSTOMER', 'CUSTOMER')), default="CUSTOMER")
+
 class BooKantinAPIToken(models.Model):
     key = models.CharField(max_length=40, primary_key=True)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
