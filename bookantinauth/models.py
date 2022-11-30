@@ -11,9 +11,15 @@ class Seller(models.Model):
     description = models.TextField(default="", null=True, blank=True)
     verified = models.BooleanField(default=False)
 
+    def __str__(self):
+        return f"{self.user.username} - {'Verified' if self.verified else 'Not Verified'}"
+
 class UserExtension(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="user_extension")
     type = models.CharField(max_length=10, choices=(('SELLER', 'SELLER'), ('CUSTOMER', 'CUSTOMER')), default="CUSTOMER")
+
+    def __str__(self):
+        return f"{self.user.username} - {self.type}"
 
 class BooKantinAPIToken(models.Model):
     key = models.CharField(max_length=40, primary_key=True)
