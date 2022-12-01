@@ -1,5 +1,4 @@
 from rest_framework import viewsets
-from authentication.helpers import getDataFromToken
 from .models import Menu
 from .serializers import MenuSerializer
 from rest_framework.response import Response
@@ -35,7 +34,7 @@ class MenuViewSet(viewsets.ModelViewSet):
             return Response(serializer.data)
         return Response(serializer.errors)
 
-    def destroy(self, request, pk=None):
+    def delete(self, request, pk=None):
         menu = Menu.objects.get(id=pk)
         menu.delete()
         return Response('Menu deleted successfully')
