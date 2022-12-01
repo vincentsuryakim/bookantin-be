@@ -16,10 +16,10 @@ class SellerMenuSerializer(serializers.ModelSerializer):
         fields = ('id', 'user', 'description', 'verified')
 
 class SellerSerializer(serializers.ModelSerializer):
-    from menuapp.serializers import MenuSerializer
+    from menuapp.serializers import MenuOnlySerializer
 
     user = SellerUserSerializer()
-    menu = MenuSerializer(read_only=True, many=True)
+    menu = MenuOnlySerializer(read_only=True, many=True)
 
     class Meta:
         model = Seller
