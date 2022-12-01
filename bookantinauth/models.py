@@ -16,7 +16,7 @@ class Seller(models.Model):
 
 class UserExtension(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="user_extension")
-    type = models.CharField(max_length=10, choices=(('SELLER', 'SELLER'), ('CUSTOMER', 'CUSTOMER')), default="CUSTOMER")
+    type = models.CharField(max_length=10, choices=(('SELLER', 'SELLER'), ('CUSTOMER', 'CUSTOMER'), ('ADMIN', 'ADMIN')), default="CUSTOMER")
 
     def __str__(self):
         return f"{self.user.username} - {self.type}"
