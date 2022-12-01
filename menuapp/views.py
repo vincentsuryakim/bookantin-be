@@ -1,5 +1,4 @@
 from rest_framework import viewsets
-from authentication.helpers import getDataFromToken
 from .models import Menu
 from .serializers import MenuSerializer
 from rest_framework.response import Response
