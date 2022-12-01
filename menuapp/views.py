@@ -35,7 +35,7 @@ class MenuViewSet(viewsets.ModelViewSet):
             return Response(serializer.data)
         return Response(serializer.errors)
 
-    def destroy(self, request, pk=None):
+    def delete(self, request, pk=None):
         menu = Menu.objects.get(id=pk)
         menu.delete()
         return Response('Menu deleted successfully')
