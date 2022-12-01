@@ -6,6 +6,7 @@ from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from django.db import IntegrityError
 
+from .models import Seller, UserExtension
 from .serializers import LoginSerializer, RegisterSerializer
 from .utils import generate_token
 
@@ -51,7 +52,16 @@ def user_register(request):
         data['response'] = 'Something went wrong.'
         return Response(data=data, status=status.HTTP_400_BAD_REQUEST)
     
+
+    user_extension = UserExtension.objects.create(user=user, type=request.data['type'])
+
+    if request.data['type'] == 'SELLER':
+        seller = Seller.objects.create(user=user)
+        seller.save()
+    
     user.save()
+    user_extension.save()
+
     data['response'] = 'User created successfully.'
     return Response(data=data, status=status.HTTP_201_CREATED)
 
@@ -72,5 +82,6 @@ def get_user_data(request):
         'email': user.email,
         'first_name': user.first_name,
         'last_name': user.last_name,
+        'type': user.user_extension.type,
     }
     return Response(data=data, status=status.HTTP_200_OK)
