@@ -7,14 +7,90 @@ from rest_framework.permissions import IsAuthenticated
 from django.db import IntegrityError
 
 from .models import Seller, UserExtension
-from .serializers import LoginSerializer, RegisterSerializer
+from .serializers import LoginSerializer, RegisterSerializer, SellerSerializer
 from .utils import generate_token
+
+from bookantinauth.permissions import IsAdmin
 
 class SellerViewSet(viewsets.ModelViewSet):
     queryset = Seller.objects.filter(verified = True)
     serializer_class = SellerSerializer
     http_method_class = ['get']
 
+class SellerAllViewSet(viewsets.ModelViewSet):
+    queryset = Seller.objects.all()
+    serializer_class = SellerSerializer
+    http_method_class = ['get', 'post', 'put', 'destroy']
+    permission_classes = [IsAdmin]
+
+    def list(self, request):
+        queryset = Seller.objects.all()
+        serializer = SellerSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+    def create(self, request):
+        data = request.data
+        try:
+            seller = Seller.objects.get(id=data['id'])
+            seller.verified = True
+            seller.save()
+            return Response('Seller verified successfully', status=201)
+        except:
+            return Response('Seller does not exist', status=404)
+    
+    def verified(self, request, pk=None):
+        seller = Seller.objects.get(id=pk)
+        seller.verified = True
+        seller.save()
+        return Response('Seller verified successfully')
+
+    def update(self, request, pk=None):
+        data = request.data
+        user = request.user
+ 
+        seller = Seller.objects.get(id=pk)
+
+        if IsAdmin == False:
+            return Response('You are not authorized to update this seller.', status=403)
+        
+        if 'username' in data:
+            seller.username = data['username']
+        else:
+            data['username'] = seller.username
+        if 'email' in data:
+            seller.email = data['email']
+        else:
+            data['email'] = seller.email
+        if 'first_name' in data:
+            seller.first_name = data['first_name']
+        else:
+            data['first_name'] = seller.first_name
+        if 'last_name' in data:
+            seller.last_name = data['last_name']
+        else:
+            data['last_name'] = seller.last_name
+        if 'type' in data:
+            seller.type = data['type']
+        else:
+            data['type'] = seller.type
+        
+        serializer = SellerSerializer(seller, data=data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response('Seller updated successfully', serializer.data)
+        return Response(serializer.errors)
+
+    def destroy(self, request, pk=None):
+        user = request.user
+
+        seller = Seller.objects.get(id=pk)
+
+        if IsAdmin == False:
+            return Response('You are not authorized to delete this menu', status=403)
+
+        seller.delete()
+        return Response('Seller deleted successfully')
+        
 @api_view(["POST"])
 @authentication_classes([])
 @permission_classes([])
