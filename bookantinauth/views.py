@@ -20,13 +20,13 @@ class SellerViewSet(viewsets.ModelViewSet):
 class SellerAllViewSet(viewsets.ModelViewSet):
     queryset = Seller.objects.all()
     serializer_class = SellerSerializer
-    http_method_class = ['get', 'post', 'put', 'destroy']
+    http_method_class = ['get', 'post', 'put', 'delete']
     permission_classes = [IsAdmin]
 
-    def list(self, request):
-        queryset = Seller.objects.all()
-        serializer = SellerSerializer(queryset, many=True)
-        return Response(serializer.data)
+    def get_permissions(self):
+        if self.action in ['create', 'update', 'destroy']:
+            self.permission_classes = [IsAdmin]
+        return super().get_permissions()
 
     def create(self, request):
         data = request.data
@@ -38,20 +38,9 @@ class SellerAllViewSet(viewsets.ModelViewSet):
         except:
             return Response('Seller does not exist', status=404)
     
-    def verified(self, request, pk=None):
-        seller = Seller.objects.get(id=pk)
-        seller.verified = True
-        seller.save()
-        return Response('Seller verified successfully')
-
     def update(self, request, pk=None):
         data = request.data
-        user = request.user
- 
         seller = Seller.objects.get(id=pk)
-
-        if IsAdmin == False:
-            return Response('You are not authorized to update this seller.', status=403)
         
         if 'username' in data:
             seller.username = data['username']
@@ -82,11 +71,7 @@ class SellerAllViewSet(viewsets.ModelViewSet):
 
     def destroy(self, request, pk=None):
         user = request.user
-
         seller = Seller.objects.get(id=pk)
-
-        if IsAdmin == False:
-            return Response('You are not authorized to delete this menu', status=403)
 
         seller.delete()
         return Response('Seller deleted successfully')
