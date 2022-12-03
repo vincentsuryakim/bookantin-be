@@ -2,7 +2,6 @@ from rest_framework import viewsets
 from .models import Menu
 from .serializers import MenuOnlySerializer, MenuSerializer
 from rest_framework.response import Response
-from django.forms.models import model_to_dict
 
 from bookantinauth.permissions import IsSellerVerified
 from bookantinauth.models import Seller
