@@ -24,7 +24,7 @@ class Cart(models.Model):
         return super(Cart, self).save(*args, **kwargs)
 
     def __str__(self):
-        return f"{self.userId} - {self.checkedOut} - {self.status} - {self.checkOutTime} - {self.createdDate} - {self.lastUpdated}"
+        return f"{self.user} - {self.checkedOut} - {self.status} - {self.checkOutTime} - {self.createdDate} - {self.lastUpdated}"
 
 
 class CartContent(models.Model):
@@ -34,4 +34,4 @@ class CartContent(models.Model):
     quantity = models.IntegerField()
 
     def __str__(self):
-        return f"{self.cartId} - {self.menuId} - {self.quantity}"
+        return f"{self.cart} - {self.menu} - {self.quantity}"
