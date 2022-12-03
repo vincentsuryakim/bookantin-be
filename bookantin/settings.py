@@ -56,7 +56,8 @@ INSTALLED_APPS = [
 
     # Apps
     'bookantinauth',
-    'tesapp'
+    'menuapp',
+    'tesapp',
 ]
 
 MIDDLEWARE = [
