@@ -7,7 +7,7 @@ from rest_framework.permissions import IsAuthenticated
 from django.db import IntegrityError
 
 from .models import Seller, UserExtension
-from .serializers import LoginSerializer, RegisterSerializer
+from .serializers import LoginSerializer, RegisterSerializer, SellerSerializer
 
 from .utils import generate_token
 
