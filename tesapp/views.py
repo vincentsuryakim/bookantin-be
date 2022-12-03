@@ -16,8 +16,7 @@ class CartContentViewSet(viewsets.ModelViewSet):
     http_method_class = ['get', 'post', 'put', 'delete']
 
     def get_permissions(self):
-        if self.action in ['update', 'destroy', 'create','get_by_CartId','get_by_MenuId_CartId','update_quantity_by_cartId_menuId','delete_by_CartId_MenuId']:
-            self.permission_classes = (IsCustomer, )
+        self.permission_classes = (IsCustomer, )
         return super().get_permissions()
         
     @action(detail=True, methods=['get'])
@@ -75,8 +74,7 @@ class CartViewSet(viewsets.ModelViewSet):
     serializer_class = CartSerializer
     http_method_class = ['get', 'post', 'put', 'delete']
     def get_permissions(self):
-        if self.action in ['update', 'destroy', 'create','set_checkout_true_by_id','update_status_by_id','delete']:
-            self.permission_classes = (IsCustomer, )
+        self.permission_classes = (IsCustomer, )
         return super().get_permissions()
 
     @action(detail=True, methods=['get'])
