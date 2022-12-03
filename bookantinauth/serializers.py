@@ -1,5 +1,36 @@
 from rest_framework import serializers
 
+from .models import Seller
+from django.contrib.auth.models import User
+
+class SellerUserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ('first_name', 'last_name')
+
+class SellerMenuSerializer(serializers.ModelSerializer):
+    user = SellerUserSerializer()
+
+    class Meta:
+        model = Seller
+        fields = ('id', 'user', 'description', 'verified')
+
+class SellerSerializer(serializers.ModelSerializer):
+    from menuapp.serializers import MenuOnlySerializer
+
+    user = SellerUserSerializer()
+    menu = MenuOnlySerializer(read_only=True, many=True)
+
+    class Meta:
+        model = Seller
+        fields = (
+            'id',
+            'user',
+            'description',
+            'verified',
+            'menu'
+        )
+
 class LoginSerializer(serializers.Serializer):
     username = serializers.CharField()
     password = serializers.CharField()
