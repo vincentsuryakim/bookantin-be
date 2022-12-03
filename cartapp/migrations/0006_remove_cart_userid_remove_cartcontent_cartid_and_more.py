@@ -10,7 +10,7 @@ class Migration(migrations.Migration):
     dependencies = [
         ('menuapp', '0002_alter_menu_seller'),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('tesapp', '0005_alter_cart_checkouttime_alter_cart_createddate_and_more'),
+        ('cartapp', '0005_alter_cart_checkouttime_alter_cart_createddate_and_more'),
     ]
 
     operations = [
@@ -34,7 +34,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='cartcontent',
             name='cart',
-            field=models.ForeignKey(default=1, on_delete=django.db.models.deletion.CASCADE, related_name='contents', to='tesapp.cart'),
+            field=models.ForeignKey(default=1, on_delete=django.db.models.deletion.CASCADE, related_name='contents', to='cartapp.cart'),
             preserve_default=False,
         ),
         migrations.AddField(
