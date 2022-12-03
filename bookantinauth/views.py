@@ -20,11 +20,11 @@ class SellerViewSet(viewsets.ModelViewSet):
 class SellerAllViewSet(viewsets.ModelViewSet):
     queryset = Seller.objects.all()
     serializer_class = SellerSerializer
-    http_method_class = ['get', 'post', 'put', 'delete']
+    http_method_class = ['get', 'post', 'delete']
     permission_classes = [IsAdmin]
 
     def get_permissions(self):
-        if self.action in ['create', 'update', 'destroy']:
+        if self.action in ['create', 'destroy']:
             self.permission_classes = [IsAdmin]
         return super().get_permissions()
 
@@ -37,44 +37,12 @@ class SellerAllViewSet(viewsets.ModelViewSet):
             return Response('Seller verified successfully', status=201)
         except:
             return Response('Seller does not exist', status=404)
-    
-    def update(self, request, pk=None):
-        data = request.data
-        seller = Seller.objects.get(id=pk)
-        
-        if 'username' in data:
-            seller.username = data['username']
-        else:
-            data['username'] = seller.username
-        if 'email' in data:
-            seller.email = data['email']
-        else:
-            data['email'] = seller.email
-        if 'first_name' in data:
-            seller.first_name = data['first_name']
-        else:
-            data['first_name'] = seller.first_name
-        if 'last_name' in data:
-            seller.last_name = data['last_name']
-        else:
-            data['last_name'] = seller.last_name
-        if 'type' in data:
-            seller.type = data['type']
-        else:
-            data['type'] = seller.type
-        
-        serializer = SellerSerializer(seller, data=data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response('Seller updated successfully', serializer.data)
-        return Response(serializer.errors)
 
     def destroy(self, request, pk=None):
         user = request.user
-        seller = Seller.objects.get(id=pk)
-
-        seller.delete()
-        return Response('Seller deleted successfully')
+        userId = Seller.objects.get(id=pk).user.pk
+        User.objects.get(id = userId).delete()
+        return Response('Seller deleted successfully', status=201)
         
 @api_view(["POST"])
 @authentication_classes([])
