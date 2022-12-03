@@ -2,13 +2,19 @@ from rest_framework.decorators import api_view, authentication_classes, permissi
 from rest_framework.response import Response
 from django.contrib.auth import authenticate, logout
 from django.contrib.auth.models import User
-from rest_framework import status
+from rest_framework import status, viewsets
 from rest_framework.permissions import IsAuthenticated
 from django.db import IntegrityError
 
 from .models import Seller, UserExtension
-from .serializers import LoginSerializer, RegisterSerializer
+from .serializers import LoginSerializer, SellerSerializer, RegisterSerializer
+
 from .utils import generate_token
+
+class SellerViewSet(viewsets.ModelViewSet):
+    queryset = Seller.objects.filter(verified = True)
+    serializer_class = SellerSerializer
+    http_method_class = ['get']
 
 @api_view(["POST"])
 @authentication_classes([])

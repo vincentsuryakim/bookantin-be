@@ -23,6 +23,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/health', HealthCheckAPI.as_view()),
     path('api/', include('bookantinauth.urls')),
+    path('api/', include('menuapp.urls')),
     path('api/', include('tesapp.urls')),
 ]
 
