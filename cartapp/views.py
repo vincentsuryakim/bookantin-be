@@ -1,13 +1,15 @@
 from rest_framework import viewsets
-from rest_framework.response import Response
-from rest_framework.decorators import action
-from django.forms.models import model_to_dict
-from django.utils import timezone
-
-from bookantinauth.permissions import IsCustomer
-
 from .models import Cart, CartContent
 from .serializers import CartContentSerializer, CartSerializer
+from rest_framework.response import Response
+from rest_framework.decorators import action
+from bookantinauth.permissions import IsSellerVerified, IsCustomer
+from bookantinauth.models import Seller
+from django.core import serializers
+from django.forms.models import model_to_dict
+from django.utils import timezone
+import json
+
 
 class CartContentViewSet(viewsets.ModelViewSet):
     queryset = CartContent.objects.all()
@@ -85,6 +87,7 @@ class CartContentViewSet(viewsets.ModelViewSet):
         cartContent.delete()
         return Response("berhasil dihapus")
 
+
 class CartViewSet(viewsets.ModelViewSet):
     queryset = Cart.objects.all()
     serializer_class = CartSerializer
@@ -136,6 +139,7 @@ class CartViewSet(viewsets.ModelViewSet):
         
     @action(detail=True,methods=['get'])
     def delete(self, request, pk):
+        user = request.user
         cart = Cart.objects.get(id__exact=pk)
         if cart.user.pk != user.pk:
             return Response('You are not authorized to delete this cart.', status=403)
