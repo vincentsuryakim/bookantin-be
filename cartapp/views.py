@@ -11,7 +11,7 @@ from rest_framework.views import APIView
 from bookantinauth.models import Seller
 from bookantinauth.permissions import IsSellerVerified, IsCustomer
 from .models import Cart, CartContent
-from .serializers import CartContentOnlySerializer,CartContentSerializer, CartSerializer, CartContentHistorySerializer, CartOnlySerializer, CartContentAttributeSerializer
+from .serializers import CartContentOnlySerializer,CartContentSerializer, CartSerializer, CartContentHistorySerializer, CartOnlySerializer, CartContentAttributeSerializer,CartAttributeSerializer
 
 
 class CartContentViewSet(viewsets.ModelViewSet):
@@ -58,10 +58,9 @@ class CartContentViewSet(viewsets.ModelViewSet):
         cartContent.quantity = cartContent.quantity + newQuantity
         cartContent.save()
 
-        serializer = CartContentAttributeSerializer(data=model_to_dict(cartContent))
-        if serializer.is_valid():
-            return Response(serializer.data)
-        return Response(serializer.errors)
+        serializer = CartContentAttributeSerializer(cartContent)
+        return Response(serializer.data)
+        
 
     @action(detail=True, methods=['post'])
     def update_quantity(self, request, pk):
@@ -72,10 +71,9 @@ class CartContentViewSet(viewsets.ModelViewSet):
             return Response('You are not authorized to update this cart.', status=403)
         cartContent.quantity = data['quantity']
         cartContent.save()
-        serializer = CartContentAttributeSerializer(data=model_to_dict(cartContent))
-        if serializer.is_valid():
-            return Response(serializer.data)
-        return Response(serializer.errors)
+        serializer = CartContentAttributeSerializer(cartContent)
+        return Response(serializer.data)
+        
 
     @action(detail=False, methods=['post'])
     def delete_by_CartId_MenuId(self, request):
@@ -93,7 +91,7 @@ class CartContentViewSet(viewsets.ModelViewSet):
 
 class CartViewSet(viewsets.ModelViewSet):
     queryset = Cart.objects.all()
-    serializer_class = CartOnlySerializer
+    serializer_class = CartAttributeSerializer
     http_method_class = ['get', 'post', 'put', 'delete']
 
     # permission_classes = (IsCustomer, IsSellerVerified)
@@ -104,10 +102,10 @@ class CartViewSet(viewsets.ModelViewSet):
         user = request.user
         cart = Cart(user=user)
         cart.save()
-        serializer = CartOnlySerializer(data=model_to_dict(cart))
-        if serializer.is_valid():
-            return Response(serializer.data)
-        return Response(serializer.errors)
+        print(model_to_dict(cart))
+
+        serializer = CartAttributeSerializer(cart)
+        return Response(serializer.data)
 
     @action(detail=True, methods=['get'])
     @permission_classes([IsCustomer])
@@ -121,10 +119,9 @@ class CartViewSet(viewsets.ModelViewSet):
         cart.checkOutTime = timezone.now()
         cart.save()
 
-        serializer = CartOnlySerializer(data=model_to_dict(cart))
-        if serializer.is_valid():
-            return Response(serializer.data)
-        return Response(serializer.errors)
+        serializer = CartOnlySerializer(cart)
+        return Response(serializer.data)
+    
 
     @action(detail=False, methods=['post'])
     @permission_classes([IsCustomer])
@@ -140,10 +137,8 @@ class CartViewSet(viewsets.ModelViewSet):
 
         cart.status = newStatus
         cart.save()
-        serializer = CartOnlySerializer(data=model_to_dict(cart))
-        if serializer.is_valid():
-            return Response(serializer.data)
-        return Response(serializer.errors)
+        serializer = CartOnlySerializer(cart)
+        return Response(serializer.data)
 
     @action(detail=True, methods=['post'], permission_classes=[IsAuthenticated])
     def accept_payment(self, request, pk=None):

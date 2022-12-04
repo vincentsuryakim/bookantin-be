@@ -32,6 +32,11 @@ class CartContentAttributeSerializer(serializers.ModelSerializer):
         model = CartContent
         fields = "__all__"
 
+class CartAttributeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Cart
+        fields = "__all__"
+
 class CartSerializer(serializers.ModelSerializer):
     cart_content = CartContentOnlySerializer(many=True)
 
@@ -47,7 +52,6 @@ class CartSerializer(serializers.ModelSerializer):
             'lastUpdated',
             'cart_content'
         )
-
 
 class CartOnlySerializer(serializers.ModelSerializer):
     class Meta:
