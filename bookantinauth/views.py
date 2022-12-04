@@ -119,3 +119,23 @@ def get_user_data(request):
         'type': user.user_extension.type,
     }
     return Response(data=data, status=status.HTTP_200_OK)
+
+@api_view(["PUT"])
+@permission_classes([IsAuthenticated])
+def update_user_data(request):
+    user = request.user
+    data = request.data
+
+    try:
+        user.username = data['username']
+        user.email = data['email']
+        user.first_name = data['first_name']
+        user.last_name = data['last_name']
+        user.save()
+        return Response('User data updated successfully', status=status.HTTP_200_OK)
+    except IntegrityError as e:
+        data['response'] = 'Username or email already exists.'
+        return Response(data=data, status=status.HTTP_409_CONFLICT)
+    except:
+        data['response'] = 'Something went wrong.'
+        return Response(data=data, status=status.HTTP_400_BAD_REQUEST)
