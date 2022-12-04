@@ -7,7 +7,7 @@ from rest_framework.permissions import IsAuthenticated
 from django.db import IntegrityError
 
 from .models import Seller, UserExtension
-from .serializers import LoginSerializer, RegisterSerializer, SellerSerializer
+from .serializers import LoginSerializer, SellerSerializer, RegisterSerializer
 from .utils import generate_token
 
 from bookantinauth.permissions import IsAdmin
