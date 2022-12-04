@@ -98,6 +98,7 @@ class CartViewSet(viewsets.ModelViewSet):
     queryset = Cart.objects.all()
     serializer_class = CartSerializer
     http_method_class = ['get', 'post', 'put', 'delete']
+
     # permission_classes = (IsCustomer, IsSellerVerified)
 
     @action(detail=False, methods=['get'])
@@ -151,7 +152,7 @@ class CartViewSet(viewsets.ModelViewSet):
     def accept_payment(self, request, pk=None):
         user = request.user
         cart = Cart.objects.get(id__exact=pk)
-        if cart.status == "menunggu_pembayaran" and cart.checkedOut:
+        if cart.status == "menunggu_pembayaran" and not cart.checkedOut:
             cart.checkedOut = True
             cart.status = "diproses"
             cart.checkOutTime = datetime.datetime.now()
@@ -170,7 +171,8 @@ class CartViewSet(viewsets.ModelViewSet):
         menu = []
         for c in cart:
             for m in c.cart_content.all():
-                menu.append(m)
+                if m.menu.seller.user == user:
+                    menu.append(m)
         serializer = CartContentSerializer(menu, many=True)
         return Response(serializer.data)
 
