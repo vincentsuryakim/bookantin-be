@@ -1,15 +1,13 @@
 from rest_framework import viewsets
 from .models import Cart, CartContent
-from .serializers import CartContentSerializer, CartSerializer
+from .serializers import CartContentSerializer, CartSerializer, CartContentHistorySerializer
 from rest_framework.response import Response
 from rest_framework.decorators import action
 from bookantinauth.permissions import IsSellerVerified, IsCustomer
 from bookantinauth.models import Seller
-from django.core import serializers
 from django.forms.models import model_to_dict
 from django.utils import timezone
-import json
-
+from rest_framework.views import APIView
 
 class CartContentViewSet(viewsets.ModelViewSet):
     queryset = CartContent.objects.all()
@@ -22,11 +20,10 @@ class CartContentViewSet(viewsets.ModelViewSet):
         user = request.user
         queryset = CartContent.objects.filter(cart=pk)
         cart = Cart.objects.get(id=pk)
+
         if cart.user.pk != user.pk: 
             return Response('You are not authorized to access this cart.', status=403)
-        temp = []
-        # for i in  queryset:
-        #     temp = [i]
+
         serializer = CartContentSerializer(queryset, many=True)
         return Response(serializer.data)
     @action(detail=False, methods=['post'])
@@ -87,7 +84,6 @@ class CartContentViewSet(viewsets.ModelViewSet):
         cartContent.delete()
         return Response("berhasil dihapus")
 
-
 class CartViewSet(viewsets.ModelViewSet):
     queryset = Cart.objects.all()
     serializer_class = CartSerializer
@@ -146,3 +142,15 @@ class CartViewSet(viewsets.ModelViewSet):
         cart.delete()
         return Response("cart berhasil dihapus")
         
+class GetSellerHistory(APIView):
+    permission_classes = (IsSellerVerified, )
+
+    def get(self, request):
+        user = request.user
+
+        seller = Seller.objects.get(user=user)
+        cart_content = CartContent.objects.filter(menu__seller=seller).order_by('-cart__checkOutTime')
+
+        serializer = CartContentHistorySerializer(cart_content, many=True)
+
+        return Response(serializer.data)

@@ -9,4 +9,5 @@ router.register('cart', CartViewSet, basename='cart')
 
 urlpatterns = [
     path('', include(router.urls)),
+    path('get-seller-history/', GetSellerHistory.as_view()),
 ]
