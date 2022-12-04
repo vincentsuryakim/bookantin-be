@@ -34,6 +34,7 @@ class CartSerializer(serializers.ModelSerializer):
     class Meta:
         model = Cart
         fields = (
+            'id',
             'user',
             'checkedOut',
             'status',
@@ -41,4 +42,18 @@ class CartSerializer(serializers.ModelSerializer):
             'createdDate',
             'lastUpdated',
             'cart_content'
+        )
+
+
+class CartOnlySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Cart
+        fields = (
+            'id',
+            'user',
+            'checkedOut',
+            'status',
+            'checkOutTime',
+            'createdDate',
+            'lastUpdated'
         )
