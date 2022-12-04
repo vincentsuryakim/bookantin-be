@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('tesapp', '0004_alter_cart_createddate_alter_cart_lastupdated'),
+        ('cartapp', '0004_alter_cart_createddate_alter_cart_lastupdated'),
     ]
 
     operations = [

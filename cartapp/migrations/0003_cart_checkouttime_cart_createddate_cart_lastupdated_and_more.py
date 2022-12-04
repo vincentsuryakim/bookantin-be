@@ -7,7 +7,7 @@ import django.utils.timezone
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('tesapp', '0002_alter_cart_checkedout_alter_cart_status'),
+        ('cartapp', '0002_alter_cart_checkedout_alter_cart_status'),
     ]
 
     operations = [
