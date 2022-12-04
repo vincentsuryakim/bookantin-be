@@ -170,6 +170,9 @@ STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 # Allow all origins for CORS.
 CORS_ALLOW_ALL_ORIGINS = True
 
+# Allow CSRF_TRUSTED_ORIGINS
+CSRF_TRUSTED_ORIGINS = [f'http://{APP_NAME}.up.railway.app', f'https://{APP_NAME}.up.railway.app']
+
 # Use custom token authentication
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [

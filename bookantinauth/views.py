@@ -8,14 +8,42 @@ from django.db import IntegrityError
 
 from .models import Seller, UserExtension
 from .serializers import LoginSerializer, SellerSerializer, RegisterSerializer
-
 from .utils import generate_token
+
+from bookantinauth.permissions import IsAdmin
 
 class SellerViewSet(viewsets.ModelViewSet):
     queryset = Seller.objects.filter(verified = True)
     serializer_class = SellerSerializer
     http_method_class = ['get']
 
+class SellerAllViewSet(viewsets.ModelViewSet):
+    queryset = Seller.objects.all()
+    serializer_class = SellerSerializer
+    http_method_class = ['get', 'post', 'delete']
+    permission_classes = [IsAdmin]
+
+    def get_permissions(self):
+        if self.action in ['create', 'destroy']:
+            self.permission_classes = [IsAdmin]
+        return super().get_permissions()
+
+    def create(self, request):
+        data = request.data
+        try:
+            seller = Seller.objects.get(id=data['id'])
+            seller.verified = True
+            seller.save()
+            return Response('Seller verified successfully', status=201)
+        except:
+            return Response('Seller does not exist', status=404)
+
+    def destroy(self, request, pk=None):
+        user = request.user
+        userId = Seller.objects.get(id=pk).user.pk
+        User.objects.get(id = userId).delete()
+        return Response('Seller deleted successfully', status=201)
+        
 @api_view(["POST"])
 @authentication_classes([])
 @permission_classes([])
@@ -91,3 +119,23 @@ def get_user_data(request):
         'type': user.user_extension.type,
     }
     return Response(data=data, status=status.HTTP_200_OK)
+
+@api_view(["PUT"])
+@permission_classes([IsAuthenticated])
+def update_user_data(request):
+    user = request.user
+    data = request.data
+
+    try:
+        user.username = data['username']
+        user.email = data['email']
+        user.first_name = data['first_name']
+        user.last_name = data['last_name']
+        user.save()
+        return Response('User data updated successfully', status=status.HTTP_200_OK)
+    except IntegrityError as e:
+        data['response'] = 'Username or email already exists.'
+        return Response(data=data, status=status.HTTP_409_CONFLICT)
+    except:
+        data['response'] = 'Something went wrong.'
+        return Response(data=data, status=status.HTTP_400_BAD_REQUEST)
