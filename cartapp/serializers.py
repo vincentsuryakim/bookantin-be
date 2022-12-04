@@ -27,7 +27,10 @@ class CartContentOnlySerializer(serializers.ModelSerializer):
             'quantity',
             'menu'
         )
-
+class CartContentAttributeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CartContent
+        fields = "__all__"
 
 class CartSerializer(serializers.ModelSerializer):
     cart_content = CartContentOnlySerializer(many=True)
