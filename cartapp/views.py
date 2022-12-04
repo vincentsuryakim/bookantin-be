@@ -40,7 +40,6 @@ class CartContentViewSet(viewsets.ModelViewSet):
         cartContent = CartContent.objects.get(cart=cartId, menu=menuId)
         if cartContent.cart.user.pk != user.pk:
             return Response('You are not authorized to access this cart.', status=403)
-        print(cartContent)
         serializer = CartContentOnlySerializer(cartContent)
         return Response(serializer.data)
 
@@ -105,7 +104,6 @@ class CartViewSet(viewsets.ModelViewSet):
         user = request.user
         cart = Cart(user=user)
         cart.save()
-        print(cart)
         serializer = CartOnlySerializer(data=model_to_dict(cart))
         if serializer.is_valid():
             return Response(serializer.data)
