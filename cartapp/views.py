@@ -100,3 +100,14 @@ class CartViewSet(viewsets.ModelViewSet):
         if serializer.is_valid():
             return Response(serializer.data)
         return Response(serializer.errors)
+
+    @action(detail=False, methods=['post'])
+    def accept_payment(self, request, pk):
+        cart = Cart.objects.get(id__exact=pk)
+        cart.checkedOut = True
+        cart.status = 2
+        cart.save()
+        serializer = CartSerializer(data=model_to_dict(cart))
+        if serializer.is_valid():
+            return Response(serializer.data)
+        return Response(serializer.errors)
