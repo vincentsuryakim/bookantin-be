@@ -58,12 +58,13 @@ class CartOnlySerializer(serializers.ModelSerializer):
             'createdDate',
             'lastUpdated'
         )
-        fields = "__all__"
+
 
 class CartCheckoutTimeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Cart
         fields = ['checkOutTime']
+
 
 class CartContentHistorySerializer(serializers.ModelSerializer):
     menu = MenuSerializer()

@@ -1,19 +1,18 @@
-from rest_framework import viewsets
-from rest_framework.permissions import *
-
-from .models import Cart, CartContent
-from .serializers import CartContentSerializer, CartSerializer, CartOnlySerializer
-from .serializers import CartContentSerializer, CartSerializer, CartContentHistorySerializer
-from rest_framework.response import Response
-from rest_framework.decorators import action, api_view, permission_classes
-from bookantinauth.permissions import IsSellerVerified, IsCustomer
-from bookantinauth.models import Seller
-from django.forms.models import model_to_dict
-from django.utils import timezone
-import json
 import datetime
 
+from django.forms.models import model_to_dict
+from django.utils import timezone
+from rest_framework import viewsets
+from rest_framework.decorators import action, permission_classes
+from rest_framework.permissions import *
+from rest_framework.response import Response
 from rest_framework.views import APIView
+
+from bookantinauth.models import Seller
+from bookantinauth.permissions import IsSellerVerified, IsCustomer
+from .models import Cart, CartContent
+from .serializers import CartContentSerializer, CartSerializer, CartContentHistorySerializer
+
 
 class CartContentViewSet(viewsets.ModelViewSet):
     queryset = CartContent.objects.all()
@@ -92,6 +91,7 @@ class CartContentViewSet(viewsets.ModelViewSet):
             return Response('You are not authorized to delete this cart.', status=403)
         cartContent.delete()
         return Response("berhasil dihapus")
+
 
 class CartViewSet(viewsets.ModelViewSet):
     queryset = Cart.objects.all()
@@ -185,8 +185,9 @@ class CartViewSet(viewsets.ModelViewSet):
         cart.delete()
         return Response("cart berhasil dihapus")
 
+
 class GetSellerHistory(APIView):
-    permission_classes = (IsSellerVerified, )
+    permission_classes = (IsSellerVerified,)
 
     def get(self, request):
         user = request.user
