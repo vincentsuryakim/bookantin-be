@@ -20,8 +20,8 @@ class CartContentViewSet(viewsets.ModelViewSet):
     @action(detail=True, methods=['get'])
     def get_by_CartId(self, request, pk=None):
         user = request.user
-        queryset = CartContent.objects.filter(cart=pk)
         cart = Cart.objects.get(id=pk)
+        queryset = cart.cart_content 
         if cart.user.pk != user.pk: 
             return Response('You are not authorized to access this cart.', status=403)
         temp = []
