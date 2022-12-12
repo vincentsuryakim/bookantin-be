@@ -18,7 +18,7 @@ class CartContentViewSet(viewsets.ModelViewSet):
     queryset = CartContent.objects.all()
     serializer_class = CartContentAttributeSerializer
     http_method_class = ['get', 'post', 'put', 'delete']
-    permission_classes = (IsCustomer, IsAdmin)
+    permission_classes = (IsAuthenticated,)
 
     @action(detail=True, methods=['get'])
     def get_by_CartId(self, request, pk=None):
