@@ -9,7 +9,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from bookantinauth.models import Seller
-from bookantinauth.permissions import IsSellerVerified, IsCustomer
+from bookantinauth.permissions import IsSellerVerified, IsCustomer, IsAdmin
 from .models import Cart, CartContent
 from .serializers import CartContentOnlySerializer,CartContentSerializer, CartSerializer, CartContentHistorySerializer, CartOnlySerializer, CartContentAttributeSerializer,CartAttributeSerializer
 
@@ -18,7 +18,7 @@ class CartContentViewSet(viewsets.ModelViewSet):
     queryset = CartContent.objects.all()
     serializer_class = CartContentAttributeSerializer
     http_method_class = ['get', 'post', 'put', 'delete']
-    permission_classes = (IsCustomer,)
+    permission_classes = (IsCustomer, IsAdmin)
 
     @action(detail=True, methods=['get'])
     def get_by_CartId(self, request, pk=None):
